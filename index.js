@@ -19,7 +19,7 @@ app.use(
         tokens.body(req, res)
         ].join(' ')
     }))
-
+app.use(express.static('build'))
 
 let persons = [
     {
@@ -93,7 +93,6 @@ app.post('/api/persons', (request, response) => {
         id: id
     }
     persons.concat(person)
-    console.log(person)
     response.json(person)
 })
 
