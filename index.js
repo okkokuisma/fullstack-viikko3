@@ -1,4 +1,3 @@
-const { response, request, json } = require('express')
 require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
@@ -15,12 +14,12 @@ morgan.token('body', function (req, res) { return JSON.stringify(req.body) })
 app.use(
     morgan(function (tokens, req, res) {
         return [
-        tokens.method(req, res),
-        tokens.url(req, res),
-        tokens.status(req, res),
-        tokens.res(req, res, 'content-length'), '-',
-        tokens['response-time'](req, res), 'ms',
-        tokens.body(req, res)
+            tokens.method(req, res),
+            tokens.url(req, res),
+            tokens.status(req, res),
+            tokens.res(req, res, 'content-length'), '-',
+            tokens['response-time'](req, res), 'ms',
+            tokens.body(req, res)
         ].join(' ')
     }))
 
@@ -37,10 +36,11 @@ const errorHandler = (error, request, response, next) => {
 }
 
 app.get('/api/persons', (request, response, next) => {
-    Contact.find({}).then(contacts => {
-        response.json(contacts)
-    })
-    .catch(error => next(error))
+    Contact.find({})
+        .then(contacts => {
+            response.json(contacts)
+        })
+        .catch(error => next(error))
 })
 
 app.get('/info', (request, response) => {
@@ -75,21 +75,17 @@ app.delete('/api/persons/:id', (request, response, next) => {
 
 app.post('/api/persons', (request, response, next) => {
     const body = request.body
-    // if (body.name === undefined || body.number === undefined) {
-    //     return response.status(400).json({
-    //         error: 'no name or number'
-    //     })
-    // }
 
     const contact = new Contact({
         name: body.name,
         number: body.number
     })
 
-    contact.save().then(savedContact => {
-        response.json(savedContact)
-    })
-    .catch(error => next(error))
+    contact.save()
+        .then(savedContact => {
+            response.json(savedContact)
+        })
+        .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
@@ -110,5 +106,5 @@ app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+    console.log(`Server running on port ${PORT}`)
 })
